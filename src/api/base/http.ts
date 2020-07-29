@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-07-29 10:29:40
- * @LastEditTime: 2020-07-29 13:18:14
+ * @LastEditTime: 2020-07-29 16:10:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \myapp\src\api\http.ts
@@ -43,11 +43,11 @@ server.interceptors.response.use(({data}) => {
 
 type Id = number | string;
 
-interface Post_extends {
+interface Put_extends {
 	id:Id
 }
 
-export class Http<Get,Post extends Post_extends> {
+export class Http<Get,Post,Put extends Put_extends> {
 	private readonly uri:string
 
 	constructor(uri:string){
@@ -62,8 +62,12 @@ export class Http<Get,Post extends Post_extends> {
 		return server.get(`${this.uri}${id}/`)
 	}
 
-	post({ id,...data }:Post){
-		return server.post(`${this.uri}${id}/`,data)
+	post(data:Post){
+		return server.post(this.uri,data)
+	}
+
+	put({ id,...data }:Put){
+		return server.put(`${this.uri}${id}/`,data)
 	}
 
 	delete(id:Id | Id[]){

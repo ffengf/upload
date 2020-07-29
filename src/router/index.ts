@@ -1,28 +1,27 @@
-/*
- * @Author: your name
- * @Date: 2020-07-28 11:41:45
- * @LastEditTime: 2020-07-29 13:26:41
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \myapp\src\router\index.ts
- */
+
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
-import Home from '../views/Home.vue';
+
+import transition from '@/components/transition/index.vue'
 
 Vue.use(VueRouter);
 
 const routes: RouteConfig[] = [
 	{
 		path: '/',
-		name: 'Home',
-		component: Home,
+		redirect: '/home',
+		component: transition,
+		children: []
 	},
 	{
-		path: '/about',
-		name: 'About',
-		component: () => import('../views/About.vue'),
+		path: '/login',
+		name: 'login',
+		component: () => import('../views/login/index.vue'),
 	},
+	{
+		path: '*',
+		redirect: '/login'
+	}
 ];
 
 const router = new VueRouter({
