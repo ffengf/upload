@@ -8,13 +8,28 @@
 -->
 <template>
 	<div>
-		login
+		<upimg v-model="imglist" :limitMax='20' />
 	</div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { Vue, Component, Watch } from "vue-property-decorator";
 
+
+import upimg from '@/components/upimg/index.vue'
+
+
+@Component({
+	components:{
+		upimg
+	}
+})
+export default class extends Vue {
+	imglist = ['https://cos.mipinclub.com/image/2020/07/72495e58da8c48e8a00285882b968c25.png']
+
+	created(){
+
+	}
 }
 </script>
 
