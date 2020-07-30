@@ -8,7 +8,7 @@
 -->
 <template>
 	<div>
-		<upimg v-model="imglist" :limitMax='20' />
+		<upvideo></upvideo>
 	</div>
 </template>
 
@@ -17,16 +17,18 @@ import { Vue, Component, Watch } from "vue-property-decorator";
 
 
 import upimg from '@/components/upimg/index.vue'
-
-
+import editor from '@/components/editor/index.vue'
+import upvideo from "@/components/upvideo/big.vue"
 @Component({
 	components:{
-		upimg
+		upimg,
+		editor,
+		upvideo
 	}
 })
 export default class extends Vue {
 	imglist = ['https://cos.mipinclub.com/image/2020/07/72495e58da8c48e8a00285882b968c25.png']
-
+	str = ''
 	created(){
 
 	}

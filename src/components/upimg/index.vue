@@ -1,204 +1,147 @@
 <template>
     <div>
-        <!-- <el-upload
+        <el-upload
             v-show="!sortShow"
-            action="https://api.mipinclub.com/file_upload"
+            :action="url"
             ref="img"
             accept="image/jpeg, image/jpg, image/png"
             list-type="picture-card"
-            :file-list="imgListArr"
+            :file-list="parent_list"
             :limit="limitMax"
-            :on-preview="handlePictureCardPreview"
-            :on-remove="(file, fileList) => handleRemove(file, fileList, isAll)"
+            :on-preview="preview"
+            :on-remove="handleRemove"
             :before-upload="beforeUpload"
-            :on-success="(response, file, fileList) => imgLoadSuccess(response, file, fileList, true)"
-			:multiple="limitMax == 1 ? false : true"
+            :on-success="imgLoadSuccess"
+            :multiple="limitMax === 1 ? false : true"
         >
             <i class="el-icon-plus"></i>
-            <div
-                slot="tip"
-                class="el-upload__tip el-upload__tip hauto"
-                :class="{newTip: imgListArr.length > 0}"
-            >
-                <slot name="img_tip"></slot>
+            <div slot="tip" class="el-upload__tip el-upload__tip hauto newTip">
+                <slot></slot>
             </div>
         </el-upload>
-        <el-dialog :visible.sync="dialogVisible" :append-to-body="true">
+        <el-dialog :visible.sync="key" :append-to-body="true">
             <img width="100%" :src="dialogImageUrl" alt />
         </el-dialog>
-        <template v-if="isSort">
+        <template v-if="isSort && limitMax > 1">
             <draggable
                 v-show="sortShow"
-                v-model="imgListArr"
+                v-model="parent_list"
                 :options="{animation: 150}"
                 @start="drag = true"
                 @end="drag = false"
                 class="parent"
             >
-                <div class="pr" v-for="(item, index) in imgListArr" :key="index">
-                    <template v-if="item.response || item.url">
-                        <el-image :src="item | url" alt style="width: 100px; height: 100px;"></el-image>
+                <div class="pr" v-for="(item, index) in parent_list" :key="index">
+                    <template v-if="item.url">
+                        <el-image :src="item.url" alt style="width: 100px; height: 100px;"></el-image>
                     </template>
                 </div>
             </draggable>
-            <div class="sortBtn" v-show="imgListArr.length > 0">
+            <div class="sortBtn" v-show="parent_list.length > 0">
                 <el-button
                     size="medium"
                     type="danger"
                     @click.native="sortShow = !sortShow"
                 >{{sortShow ? '退出' : '进入'}}图片排序模式</el-button>
             </div>
-        </template>-->
+        </template>
     </div>
 </template>
 
 <script lang="ts">
 import draggable from "vuedraggable";
-import { equals } from "ramda";
-import { Vue, Component, Watch, Prop, Model } from "vue-property-decorator";
-
+import { equals, is } from "ramda";
+import {
+    Vue,
+    Component,
+    Watch,
+    Prop,
+    Model,
+    Emit,
+} from "vue-property-decorator";
+import {
+    ElUploadInternalRawFile,
+    ElUploadInternalFileDetail,
+} from "element-ui/types/upload";
 @Component({
+	name:"upimg",
     components: {
         draggable,
     },
 })
 export default class extends Vue {
-    @Model("change_imgList", { type: Array })
+    @Model("change_imgList", { type: Array,required:true })
     readonly imgList!: string[];
+    @Emit("change_imgList")
+    change_imgList(arr: string[]) {
+        return arr;
+    }
 
     @Prop({
         default: 1,
+        type: Number,
     })
     readonly limitMax!: number;
 
     @Prop({
-        default: false,
+        default: true,
+        type: Boolean,
     })
     readonly isSort!: boolean;
 
-    beforeUpload(file: any) {
+    @Prop({
+        default: 5,
+        type: Number,
+    })
+    readonly maxSize!: number;
+
+    key = false;
+    dialogImageUrl = "";
+    sortShow = false;
+
+    get parent_list() {
+        return this.imgList.map((x) => ({ url: x }));
+    }
+    set parent_list(arr: { url: string }[]) {
+        this.change_imgList(arr.map((x) => x.url));
+    }
+
+    get url() {
+        return `https://api.mipinclub.com/file_upload`;
+    }
+
+    beforeUpload(file: ElUploadInternalRawFile) {
         const format =
+            file.type === "image/jpg" ||
             file.type === "image/jpeg" ||
             file.type === "image/png" ||
             file.type === "image/gif";
         if (!format) {
-            // this.$message.error("请上传jpg、jpeg、png、gif格式");
+            this.$message.error("请上传jpg、jpeg、png、gif格式");
+            return false;
         }
-        const is5M = file.size / 1024 / 1024 / 1024 / 1024 / 1024 < 5;
-
-        if (!is5M) {
-            // this.$message.error("图片大小不能超过5M");
+        if (file.size > 1024 * 1024 * this.maxSize) {
+            this.$message.error(`图片大小不能超过${this.maxSize}M`);
+            return false;
         }
-
-        return format && is5M;
+        return true;
+    }
+    handleRemove(_: ElUploadInternalFileDetail, fileList: any[]) {
+        const arr = fileList.map((x) => x?.response?.url || x.url);
+        this.change_imgList(arr);
     }
 
-    created() {
-        console.log(this.isSort);
+    preview(file: ElUploadInternalFileDetail) {
+        if (file.url === undefined) return;
+        this.dialogImageUrl = file.url;
+        this.key = true;
+    }
+
+    imgLoadSuccess(res: any, __: any, fileList: any[]) {
+        const arr = fileList.map((x) => x?.response?.url || x.url);
+        this.change_imgList(arr);
     }
 }
-
-// export default {
-//     name: "upload",
-// 	props: ["limitMax", "imgList", "fileFormat", "isSort", "isAll"],
-// 	model:{
-// 		prop:"imgList",
-// 		event:"change_imgList"
-// 	},
-//     components: {
-//         draggable
-//     },
-//     data() {
-//         return {
-//             loadingImg: null,
-//             dialogVisible: false,
-//             dialogImageUrl: "",
-//             imgListArr: [],
-//             sortShow: false
-//         };
-//     },
-//     methods: {
-//         beforeUpload(file) {
-//             let format = null;
-//             if (this.fileFormat === "jpg") {
-//                 format = file.type === "image/jpeg";
-//                 if (!format) {
-//                     this.$message.error("请上传jpg格式");
-//                 }
-//             } else {
-//                 format =
-//                     file.type === "image/jpeg" ||
-//                     file.type === "image/png" ||
-//                     file.type === "image/gif";
-//                 if (!format) {
-//                     this.$message.error("请上传jpg、jpeg、png、gif格式");
-//                 }
-//             }
-//             const is5M = file.size / 1024 / 1024 / 1024 / 1024 / 1024 < 5;
-
-//             if (!is5M) {
-//                 this.$message.error("图片大小不能超过5M");
-// 			}
-
-//             return format && is5M;
-//         },
-//         // 移除图片
-//         handleRemove(file, fileList, value) {
-// 			this.imgListArr = fileList
-//         },
-//         // 预览图片
-//         handlePictureCardPreview(file) {
-//             this.dialogImageUrl = file.url;
-//             this.dialogVisible = true;
-//         },
-//         // 上传成功
-//         imgLoadSuccess(res, file, fileList, str) {
-// 			this.imgListArr = fileList
-//         },
-//         // 加载成功
-//         loadSuccess(index) {
-//             this.loadingImg = index;
-// 		},
-// 		clear(arr=[]){
-// 			this.imgListArr = arr
-// 		}
-// 	},
-// 	computed:{
-// 		get_imgList(){
-// 			return this.imgList
-// 		}
-// 	},
-// 	watch:{
-// 		imgListArr(e,old){
-// 			if(equals(e,old)) return
-// 			const emit = e.map(x => x.response ? x.response.url : x.url)
-// 			if(this.limitMax === Number(1)){
-// 				this.$emit('change_imgList',emit[0] === undefined ? '' : emit[0])
-// 			}else{
-// 				this.$emit('change_imgList',emit)
-// 			}
-// 		},
-// 		get_imgList(){
-// 			if(typeof this.imgList === 'string'){
-// 				this.imgListArr = this.imgList !== "" ? [{ url:this.imgList }] : []
-// 			}else{
-// 				this.imgListArr = this.imgList.map(x => ({url:x}))
-// 			}
-// 		}
-// 	},
-// 	filters:{
-// 		url(item){
-// 			return item.response ? item.response.url : item.url
-// 		}
-// 	},
-// 	created(){
-// 		if(typeof this.imgList === 'string'){
-// 			this.imgListArr = this.imgList !== "" ? [{ url:this.imgList }] : []
-// 		}else{
-// 			this.imgListArr = this.imgList.map(x => ({url:x}))
-// 		}
-// 	}
-// };
 </script>
 
 <style scoped>
@@ -223,6 +166,6 @@ export default class extends Vue {
     margin-top: 5px;
 }
 .newTip {
-    margin-top: -15px;
+    margin-top: -10px;
 }
 </style>
