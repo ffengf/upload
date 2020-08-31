@@ -8,10 +8,11 @@
  */
 
 import { Loading } from 'element-ui'
+import { ElLoadingComponent } from 'element-ui/types/loading';
 
 class Load {
 	protected loadingCount: number = 0;
-	protected loading: any = undefined;
+	protected loading: ElLoadingComponent|undefined = undefined;
 
 	protected startLoading() {
 		this.loading = Loading.service({
@@ -22,7 +23,7 @@ class Load {
 	}
 
 	protected endLoading() {
-		this.loading.close();
+		this.loading?.close();
 	}
 
 	public showLoading() {

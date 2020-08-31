@@ -6,12 +6,36 @@
             action="https://api.mipinclub.com/file_upload"
             multiple
         >
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">
-                将文件拖到此处，或
-                <em>点击上传</em>
-            </div>
-            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+            <div class="slot">
+				<div id="center">
+					<i class="el-icon-upload"></i>
+					<p><em>点击上传</em>或直接将视频文件拖入此区域</p>
+					<p class="p">（竖版视频将投放至社区）</p>
+				</div>
+				<div class="footer">
+					<div>
+						<p>视频格式</p>
+						<p>支持常用视频格式，推荐使用MP4</p>
+					</div>
+					<div>
+						<p>视频大小</p>
+						<p>视频文件大小不超过5G</p>
+					</div>
+					<div>
+						<p>横版视频：建议宽高比例为16：9</p>
+						<p>分辨率为1280x720以上</p>
+						<p>竖版视频：建议宽高比例为9：16</p>
+						<p>分辨率为720x1280以上</p>
+					</div>
+				</div>
+			</div>
+            <div class="el-upload__tip" slot="tip">
+				<p>流程：</p>
+				<p>1.上传：将视频上传至觅品服务器，上传完成后自动跳转至编辑页，并为视频设置合适的标题、分类信息；</p>
+				<p>2.转码：上传完成后，服务器将视频转码成多种清晰度格式，便于播放器识别播放；</p>
+				<p>3.审核：转码成功后，视频进入内容审查环节；</p>
+				<p>4.发布：审核通过，视频将成功发布。</p>
+			</div>
         </el-upload>
         <!-- <template v-if="videoUrl !== ''">
             <div class="warpper" @mouseenter="falg=true" @mouseleave="falg=false">
@@ -96,6 +120,10 @@ export default {
     created() {
         this.videoUrl = this.url;
     },
+    mounted(){
+        // document.getElementsByClassName('el-icon-upload')[0].remove()
+        // document.getElementsByClassName('el-upload__text')[0].remove()
+    }
 };
 </script>
 
@@ -104,7 +132,33 @@ export default {
 	width: 1055px;
 	height: 425px;
 }
-#big{
+.slot{
+	background: rgb(243, 243, 238);
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	/* justify-content: center; */
+	align-items: center;
+}
+.slot #center{
+	/* background: red; */
+	width: 50%;
+	height: 50%;
+	margin-top: 6%;
+}
+.slot #center em{
+	color: rgba(24, 144, 255, 1);
+	margin: 0 10px;
+}
+.slot .footer{
 	width: 100%;
+	height: 90%;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+.slot div{
+	color: rgba(0, 0, 0, 0.45);
+	font-size: 14px;
 }
 </style>

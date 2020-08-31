@@ -1,40 +1,30 @@
-<!--
- * @Author: your name
- * @Date: 2020-07-29 16:11:35
- * @LastEditTime: 2020-07-29 16:28:30
- * @LastEditors: your name
- * @Description: In User Settings Edit
- * @FilePath: \upload\src\views\login\index.vue
--->
 <template>
-	<div>
-		<upvideo></upvideo>
-	</div>
+    <div>
+		login
+		<button @click="click">goto</button>
+    </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 
-
-import upimg from '@/components/upimg/index.vue'
-import editor from '@/components/editor/index.vue'
-import upvideo from "@/components/upvideo/big.vue"
+import upimg from "@/components/upimg/index.vue";
+import editor from "@/components/editor/index.vue";
+import upvideo from "@/components/upvideo/big.vue";
+import {Mixin_list} from '@/mixin';
 @Component({
-	components:{
-		upimg,
-		editor,
-		upvideo
-	}
+    components: {
+        upimg,
+        editor,
+        upvideo,
+    },
 })
 export default class extends Vue {
-	imglist = ['https://cos.mipinclub.com/image/2020/07/72495e58da8c48e8a00285882b968c25.png']
-	str = ''
-	created(){
-
+	click(){
+		this.$router.push(`/`)
 	}
 }
 </script>
 
 <style>
-
 </style>
