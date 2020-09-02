@@ -50,7 +50,7 @@
 
 <script lang="ts">
 import draggable from "vuedraggable";
-import { equals, is } from "ramda";
+// import { equals, is } from "ramda";
 import {
     Vue,
     Component,
