@@ -1,13 +1,14 @@
 
 import axios, { AxiosInstance } from 'axios';
 import { loadding } from './loadding'
+import { app as Vue } from '@/main'
 
 const server = axios.create({
-	baseURL: process.env.API,
+	baseURL: process.env.VUE_APP_API,
 	timeout: 10000,
 	headers: {
-		Accept: 'application/json',
-		ContentType: 'application/json',
+		"Accept": 'application/json',
+		"Content-Type": 'application/json',
 	},
 })
 
@@ -22,12 +23,13 @@ server.interceptors.request.use(config => {
 server.interceptors.response.use(({ data }) => {
 	loadding.hideLoading()
 	if (data.code) {
+		Vue.$message.error(data.msg)
 		return Promise.reject(data)
 	}
 	return data
 }, err => {
 	loadding.hideLoading()
-	if (err.response && err.response.status === 401) {
+	if (err?.response?.status === 401) {
 		return Promise.reject(err)
 	}
 	return Promise.reject(err)
@@ -39,7 +41,7 @@ interface has_id {
 	id: Id
 }
 
-export abstract class Http<T extends has_id> {
+export abstract class Http_list<T extends has_id> {
 	protected readonly uri: string
 	protected readonly server: AxiosInstance = server;
 
@@ -75,3 +77,19 @@ export abstract class Http<T extends has_id> {
 }
 
 
+export abstract class Http{
+	protected readonly uri: string
+	protected readonly server: AxiosInstance = server;
+
+	constructor(uri: string) {
+		this.uri = uri
+	}
+
+	protected post(data:any){
+		return this.server.post(this.uri, data)
+	}
+
+	protected get(params: any) {
+		return this.server.get(this.uri, { params })
+	}
+}

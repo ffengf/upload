@@ -1,7 +1,10 @@
 <template>
     <div>
         <UpVideo v-model="info.video" v-if="info.video === ''" />
-		<Info v-else />
+		<Info v-else>
+			<video class="video" autoplay :src="info.video" loop></video>
+			<el-button @click="info.video = ''" type="primary" size="medium">重新上传</el-button>
+		</Info>
     </div>
 </template>
 
@@ -17,11 +20,15 @@ import Info from "@/components/upInfo/index.vue"
 })
 export default class extends Vue {
     info = {
-        video: "1",
+        video: "https://cos.mipinclub.com/video/2020/09/64bbf99702d44150a069eac90482c077.mp4",
         name: "",
     };
 }
 </script>
 
-<style>
+<style scoped>
+.video{
+	width: 350px;
+	height: 400px;
+}
 </style>
