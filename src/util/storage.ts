@@ -37,15 +37,20 @@ class StorageDb {
 	}
 
 	private static get(type:StorageType,name:string){
-
 		const ret = window[type].getItem(name)
-		if(typeof ret === null){
+		if(ret === null){
 			return null
 		}else{
-			return JSON.parse(ret as any)
+			try{
+				return JSON.parse(ret as any)
+			}catch(e){
+				return ret
+			}
 		}
 	}
 	private static remove(type:StorageType,name:string){
 		window[type].removeItem(name)
 	}
 }
+
+export default StorageDb

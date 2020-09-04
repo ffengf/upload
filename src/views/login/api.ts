@@ -2,15 +2,22 @@
 
 
 import { Http } from "@/http"
+import { AxiosResponse } from 'axios'
 
-interface login{
+export interface login{
 	phone_num:string
 	password:string
 }
 
+export interface login_info {
+	username:string
+	token:string
+	img:string
+}
+
 class HttpLogin extends Http{
 
-	login(info:login){
+	login(info:login):Promise<login_info>{
 		return this.post(info)
 	}
 }

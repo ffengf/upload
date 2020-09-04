@@ -1,10 +1,10 @@
 <template>
     <div class="main">
-		<div class="login">
+        <div class="login">
             <h4>觅品创作者中心</h4>
             <div class="loginDiv">
                 <el-form :model="info" :rules="rules" ref="adminForm">
-                    <el-form-item prop="username">
+                    <el-form-item prop="phone_num">
                         <el-input
                             placeholder="请输入手机号"
                             prefix-icon="el-icon-user"
@@ -20,41 +20,49 @@
                         ></el-input>
                     </el-form-item>
                     <div class="btn">
-                        <el-button
-                            type="primary"
-                            @click="submitAdmin('adminForm')"
-                        >登录</el-button>
+                        <el-button type="primary" @click="submit">登录</el-button>
                     </div>
                 </el-form>
             </div>
-		</div>
+        </div>
     </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
+import { UserModule } from "@/module/user";
+import { ElForm } from 'element-ui/types/form';
 
-import upimg from "@/components/upimg/index.vue";
-import editor from "@/components/editor/index.vue";
-import upvideo from "@/components/upvideo/big.vue";
-import {Mixin_list} from '@/mixin';
-import { api_login } from './api'
-@Component({
-    components: {
-        upimg,
-        editor,
-        upvideo,
-    },
-})
+@Component
 export default class extends Vue {
-	rules={}
-	info={
-		phone_num:'',
-		password:''
+    rules = {
+        phone_num: [
+            {
+                required: true,
+                message: "请输入手机号",
+                trigger: "blur",
+            },
+            { min: 9, message: "长度不少于9个字符", trigger: "blur" },
+        ],
+        password: [
+            { required: true, message: "请输入密码", trigger: "blur" },
+            { min: 6, message: "长度不少于6个字符", trigger: "blur" },
+        ],
+    };
+    info = {
+        phone_num: "18772953390",
+        password: "123456aaa",
+    };
+    async submit() {
+		await (this.$refs['adminForm'] as ElForm|undefined)?.validate()
+        await UserModule.login(this.info);
+        this.$router.push("/");
 	}
-	submitAdmin(){
-		api_login.login(this.info)
-		// this.$router.push(`/`)
+
+	created(){
+		if(UserModule.token !== null){
+			this.$router.push('/')
+		}
 	}
 }
 </script>
@@ -62,8 +70,8 @@ export default class extends Vue {
 <style lang='less' scoped>
 .main {
     width: 100%;
-	height: 100%;
-	background: #000;
+    height: 100%;
+    background: #000;
     .login {
         width: 420px;
         height: 400px;

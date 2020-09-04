@@ -116,7 +116,8 @@ const routes: RouteConfig[] = [
 		component: () => import('@/views/login/index.vue'),
 		meta: {
 			cache: false,
-			title: '登录'
+			title: '登录',
+			without_auth:true
 		}
 	},
 	{

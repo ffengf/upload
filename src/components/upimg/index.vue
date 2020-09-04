@@ -50,7 +50,6 @@
 
 <script lang="ts">
 import draggable from "vuedraggable";
-// import { equals, is } from "ramda";
 import {
     Vue,
     Component,
@@ -64,17 +63,21 @@ import {
     ElUploadInternalFileDetail,
 } from "element-ui/types/upload";
 @Component({
-	name:"upimg",
+    name: "upimg",
     components: {
         draggable,
     },
 })
 export default class extends Vue {
-    @Model("change_imgList", { type: Array,required:true })
-    readonly imgList!: string[];
+    @Model("change_imgList", { type: [Array, String], required: true })
+    readonly imgList!: string[] | string;
     @Emit("change_imgList")
-    change_imgList(arr: string[]) {
-        return arr;
+    change_imgList(arr: string[] | string) {
+		if(this.limitMax === 1){
+			return arr[0]
+		}else{
+			return arr;
+		}
     }
 
     @Prop({
@@ -100,7 +103,11 @@ export default class extends Vue {
     sortShow = false;
 
     get parent_list() {
-        return this.imgList.map((x) => ({ url: x }));
+		if(typeof this.imgList === 'string') {
+			return this.imgList === '' ? [] : [{ url:this.imgList }];
+		}else{
+			return (this.imgList as string[]).map((x) => ({ url: x }))
+		}
     }
     set parent_list(arr: { url: string }[]) {
         this.change_imgList(arr.map((x) => x.url));

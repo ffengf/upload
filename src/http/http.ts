@@ -2,6 +2,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { loadding } from './loadding'
 import { app as Vue } from '@/main'
+import { UserModule } from '@/module/user';
 
 const server = axios.create({
 	baseURL: process.env.VUE_APP_API,
@@ -15,6 +16,7 @@ const server = axios.create({
 
 server.interceptors.request.use(config => {
 	loadding.showLoading()
+	config.headers.AUTHORIZATION = UserModule.token
 	return config;
 }, err => {
 	loadding.hideLoading()
@@ -30,6 +32,12 @@ server.interceptors.response.use(({ data }) => {
 }, err => {
 	loadding.hideLoading()
 	if (err?.response?.status === 401) {
+		return Promise.reject(err)
+	}
+	if (err?.response?.status === 403) {
+		UserModule.logout()
+		Vue.$router.push('/login')
+		Vue.$message.error('登录过期')
 		return Promise.reject(err)
 	}
 	return Promise.reject(err)
@@ -85,11 +93,11 @@ export abstract class Http{
 		this.uri = uri
 	}
 
-	protected post(data:any){
+	protected post(data:any):Promise<any>{
 		return this.server.post(this.uri, data)
 	}
 
-	protected get(params: any) {
+	protected get(params?: any):Promise<any> {
 		return this.server.get(this.uri, { params })
 	}
 }

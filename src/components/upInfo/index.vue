@@ -5,82 +5,85 @@
                 <el-form
                     :model="information"
                     :rules="rules"
-                    ref="goodsForm"
+                    ref="form"
                     label-width="100px"
                     class="demo-ruleForm"
                     label-position="top"
                 >
-                    <el-form-item label="标题" prop="name">
-                        <el-input v-model="information.name" placeholder="请输入标题" size="medium"></el-input>
+                    <el-form-item label="标题" prop="title">
+                        <el-input v-model="information.title" placeholder="请输入标题" size="medium"></el-input>
                     </el-form-item>
-                    <el-form-item label="添加分类" prop="goods_unit">
+                    <el-form-item label="添加封面" prop="img">
+                        <Upimg
+                            v-model="information.img"
+                            :limitMax="1"
+                            :isAll="false"
+                            :isSort="false"
+                        >
+                            <span slot="img_tip">图片大小150px*50px,大小不超过3M,只支持.jpg, .png格式(最多上传1张)</span>
+                        </Upimg>
+                    </el-form-item>
+                    <el-form-item label="添加分类" prop="goods_classy">
                         <el-select
-                            v-model="information.goods_unit"
+                            v-model="information.goods_classy"
                             placeholder="请选择分类"
                             size="medium"
                         >
-                            <el-option value="好物种草"></el-option>
-                            <el-option value="游学留学"></el-option>
-                            <el-option value="全球置业"></el-option>
-							<el-option value="海外身份"></el-option>
-                            <el-option value="运动健康"></el-option>
-                            <el-option value="风味美食"></el-option>
-							<el-option value="时尚潮流"></el-option>
-                            <el-option value="品质生活"></el-option>
-                            <el-option value="萌宠"></el-option>
-							<el-option value="美容化妆"></el-option>
-                            <el-option value="家居"></el-option>
-                            <el-option value="汽车"></el-option>
-							<el-option value="旅游"></el-option>
-                            <el-option value="教育"></el-option>
-                            <el-option value="男士护肤"></el-option>
-							<el-option value="综艺"></el-option>
-                            <el-option value="女士护肤"></el-option>
+                            <el-option :value="1" label="好物种草"></el-option>
+                            <el-option :value="2" label="项目"></el-option>
+                            <el-option :value="3" label="运动健康"></el-option>
+                            <el-option :value="4" label="风味美食"></el-option>
+                            <el-option :value="5" label="时尚潮流"></el-option>
+                            <el-option :value="6" label="品质生活"></el-option>
+                            <el-option :value="7" label="萌宠"></el-option>
+                            <el-option :value="8" label="美容化妆"></el-option>
+                            <el-option :value="9" label="家居"></el-option>
+                            <el-option :value="10" label="汽车"></el-option>
+                            <el-option :value="11" label="旅游"></el-option>
+                            <el-option :value="12" label="教育"></el-option>
+                            <el-option :value="13" label="男士护肤"></el-option>
+                            <el-option :value="14" label="综艺"></el-option>
+                            <el-option :value="15" label="女士护肤"></el-option>
+                        </el-select>
+                        <el-select
+                            v-if="information.goods_classy === 2"
+                            v-model="information.project_type"
+                            placeholder="请选择项目分类"
+                            size="medium"
+                        >
+                            <el-option :value="1" label="游学留学"></el-option>
+                            <el-option :value="2" label="全球置业"></el-option>
+                            <el-option :value="3" label="海外身份"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="是否添加产品" prop="is_real_seal">
-                        <el-radio-group size="medium" v-model="information.is_real_seal">
+                    <el-form-item
+                        label="添加描述"
+                        prop="introduce"
+                        v-if="information.upload_type === 2"
+                    >
+                        <el-input v-model="information.introduce" placeholder="请输入描述" size="medium"></el-input>
+                    </el-form-item>
+                    <el-form-item label="是否添加产品" prop="is_goods">
+                        <el-radio-group size="medium" v-model="information.is_goods">
                             <el-radio :label="true">是</el-radio>
                             <el-radio :label="false">否</el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item label="隐私设置" prop="goods_unit">
-                        <el-select
-                            v-model="information.goods_unit"
-                            placeholder="请选择隐私设置"
-                            size="medium"
-                        >
-                            <el-option value="1" label="公开-所有人可见"></el-option>
-                            <el-option value="2" label="私密-仅自己可见"></el-option>
-                            <el-option value="3" label="我关注的人可见"></el-option>
-                            <el-option value="4" label="关注我的人可见"></el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="发布选项" prop="is_real_seal">
-                        <el-radio-group size="medium" v-model="information.is_real_seal">
-                            <el-radio :label="true">立即发布</el-radio>
-                            <el-radio :label="false">定时发布</el-radio>
-                        </el-radio-group>
-                    </el-form-item>
-                    <el-form-item label="发布时间" prop="is_real_seal">
-                        <el-date-picker v-model="information.value1" type="datetime" placeholder="选择日期时间"></el-date-picker>
-                    </el-form-item>
-                    <el-form-item label="是否允许管理员更改您的作品分享" prop="is_real_seal">
-                        <div slot="label">
-                            <span>是否允许管理员更改您的作品分享</span>
-                            <el-tooltip
-                                class="item"
-                                effect="dark"
-                                content="将您的作品推送给更多用户"
-                                placement="top"
+                    <el-form-item label="添加商品" prop="goods_id" v-if="information.is_goods === true">
+                        <el-select v-model="information.goods_id" multiple placeholder="请选择商品">
+                            <el-option
+                                v-for="item in list"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id"
                             >
-                                <i class="el-icon-question"></i>
-                            </el-tooltip>
-                        </div>
-                        <el-radio-group size="medium" v-model="information.is_real_seal">
-                            <el-radio :label="true">允许</el-radio>
-                            <el-radio :label="false">不允许</el-radio>
-                        </el-radio-group>
+                                <span style="float: left">{{ item.name }}</span>
+                                <img
+                                    style="float: right;height:50px;width:50px"
+                                    :src="item.img_list[0]"
+                                />
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                     <div style="display: flex; justify-content: center;margin: 20px 0;">
                         <el-button @click="submit" type="primary" size="medium">提交</el-button>
@@ -95,12 +98,36 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from "vue-property-decorator";
-@Component({})
+import { Vue, Component, Watch, Prop, Emit } from "vue-property-decorator";
+import { ElForm } from "element-ui/types/form";
+import Upimg from "@/components/upimg/index.vue";
+import { api_up_info, goods } from "./api";
+@Component({
+    components: { Upimg },
+})
 export default class extends Vue {
     information = {};
-	rules={}
-    async submit() {}
+    @Prop({ required: true, type: Object })
+    readonly info!: Record<string, any>;
+	rules = {};
+
+	@Emit('submit')
+    async submit() {
+		await (this.$refs["form"] as ElForm | undefined)?.validate();
+		return this.information
+    }
+
+    list:goods[] = [];
+
+    async get_list() {
+		const { results } = await api_up_info.search_goods();
+		this.list = results
+    }
+
+    created() {
+        this.get_list();
+        this.information = { ...this.info };
+    }
 }
 </script>
 

@@ -25,25 +25,27 @@ import {
 })
 export default class extends Vue {
     @Model("change_input", { type: String, required: true })
-    readonly input!: string;
+	readonly input!: string;
     @Emit("change_input")
     change_input(str: string) {
         return str;
     }
+
+	editor:any
 
     get value() {
         return this.input;
     }
     set value(val) {
         this.change_input(val);
-    }
-
+	}
     get url() {
         return `http://152.136.202.78:8080/admin/article/imgUpload`;
     }
 
     mounted() {
-        const editor = new E('#div1', '#edit_text');
+		const editor = new E('#div1', '#edit_text');
+		this.editor = editor
         editor.customConfig.onchangeTimeout = 1;
         editor.customConfig.uploadFileName = "file";
         editor.customConfig.uploadImgServer = this.url;
@@ -72,7 +74,8 @@ export default class extends Vue {
             "redo",
         ];
         editor.customConfig.zIndex = 1;
-        editor.create();
+		editor.create();
+		editor.txt.html(this.value)
     }
 }
 </script>

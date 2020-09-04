@@ -61,9 +61,18 @@ export default class extends Vue {
     @Emit("change_url")
     change_imgList(url: string) {
         return url;
-    }
+	}
+	@Emit("video_time")
+	video_time(time:number){
+		return time
+	}
 
     beforeUpload(file: HTMLFieldSetElement) {
+		const url = URL.createObjectURL(file)
+		const video = new Audio(url)
+		video.addEventListener('loadedmetadata',()=>{
+			this.video_time(video.duration)
+		})
         if (file.type !== "video/ogg" && file.type !== "video/mp4") {
             this.$message.error("请上传mp4或者ogg格式视频");
             return false;
@@ -74,57 +83,6 @@ export default class extends Vue {
 		this.change_imgList(res.url)
 	}
 }
-// export default {
-//     name: "upload",
-//     props: ["url"],
-//     model: {
-//         prop: "url",
-//         event: "change_url",
-//     },
-//     components: {
-//         draggable,
-//     },
-//     data() {
-//         return {
-//             videoUrl: "",
-//             falg: false,
-//         };
-//     },
-//     methods: {
-//         beforeUpload(file) {
-//             if (file.type !== "video/ogg" && file.type !== "video/mp4") {
-//                 this.$message.error("请上传mp4或者ogg格式视频");
-//                 return false;
-//             } else {
-//                 const url = URL.createObjectURL(file);
-//                 var audioElement = new Audio(url);
-//                 audioElement.addEventListener("loadedmetadata", () => {
-//                     this.videoTime = audioElement.duration.toFixed(2);
-//                 });
-//             }
-//         },
-//         handleRemove(file, fileList, value) {
-//             this.videoUrl = "";
-//         },
-//         uploadSuccess(res, file, fileList, str) {
-//             this.videoUrl = res.url;
-//         },
-//         del() {
-//             this.videoUrl = "";
-//         },
-//         progress(event, file, fileList) {
-//             console.log(event);
-//         },
-//     },
-//     watch: {
-//         videoUrl(url) {
-//             this.$emit("change_url", url);
-//         },
-//     },
-//     created() {
-//         this.videoUrl = this.url;
-//     }
-// };
 </script>
 
 <style>
@@ -137,7 +95,6 @@ export default class extends Vue {
     height: 100%;
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
     align-items: center;
 }
 .slot #center {
