@@ -5,9 +5,10 @@ import { clean } from '@/util/object';
 
 
 
-interface id {
-	id: number
+interface Id {
+	id: number | string
 }
+
 interface get_list<T> {
 	results: T[]
 	count: number
@@ -16,24 +17,24 @@ interface get_list<T> {
 type axios_get<T> = (filter: Object) => Promise<get_list<T>>
 
 
-export const Mixin_list = <T extends id>(axios_get: axios_get<T>) => {
+export const Mixin_list = <T extends Id>(axios_get: axios_get<T>) => {
 	// @ts-ignore
 	@Component
 	abstract class Mixin_list extends Vue {
 		list: T[] = [];
 		total: number = 0;
-		page_size: number = 0;
+		page_size: number = 10;
 		page: number = 1;
 		selete: T[] = [];
 		ordering: string = '';
 
-		abstract filter: Record<string,string|number>
+		abstract filter: Record<string, string | number>
 
 		allSelect(val: T[]) {
 			this.selete = val
 		}
 
-		sort_change({ prop, order }: Record<string,string>) {//ascending 升 id
+		sort_change({ prop, order }: Record<string, string>) {//ascending 升 id
 			if (order === null) {
 				this.ordering = ''
 				return

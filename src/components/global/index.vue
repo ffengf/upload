@@ -35,7 +35,7 @@ export default class extends Vue {}
     display: flex;
     justify-content: center;
     #container {
-        width: 1140px !important;
+        width: 1240px !important;
         overflow: hidden;
         background: #fff;
         flex: none !important;

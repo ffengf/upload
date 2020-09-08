@@ -40,7 +40,7 @@ const routes: RouteConfig[] = [
 						path: 'video',
 						component: () => import('@/views/content/video/index.vue'),
 						meta: {
-							cache: true,
+							cache: false,
 							title: '视频管理'
 						}
 					},
@@ -48,8 +48,17 @@ const routes: RouteConfig[] = [
 						path: 'article',
 						component: () => import('@/views/content/article/index.vue'),
 						meta: {
-							cache: true,
+							cache: false,
 							title: '文章管理'
+						}
+					},
+					{
+						path: 'comment/:id',
+						name: 'comment',
+						component: () => import('@/views/content/comment/index.vue'),
+						meta: {
+							cache: false,
+							title: '评论列表'
 						}
 					}
 				]
@@ -65,7 +74,8 @@ const routes: RouteConfig[] = [
 				children:[
 					{
 						path: 'concern',
-						component: () => import('@/views/interaction/concern/index.vue'),
+						name: 'concern',
+						component: () => import('@/views/interaction/components/index.vue'),
 						meta: {
 							cache: true,
 							title: '关注列表'
@@ -73,10 +83,11 @@ const routes: RouteConfig[] = [
 					},
 					{
 						path: 'fans',
-						component: () => import('@/views/interaction/fans/index.vue'),
+						name: 'fans',
+						component: () => import('@/views/interaction/components/index.vue'),
 						meta: {
 							cache: true,
-							title: '关注列表'
+							title: '粉丝列表'
 						}
 					}
 				]

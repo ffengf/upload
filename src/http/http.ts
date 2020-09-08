@@ -57,7 +57,7 @@ export abstract class Http_list<T extends has_id> {
 		this.uri = uri
 	}
 
-	protected get<R>(params: unknown): Promise<R> {
+	protected get<R>(params: any): Promise<R> {
 		return this.server.get(this.uri, { params })
 	}
 
@@ -81,6 +81,10 @@ export abstract class Http_list<T extends has_id> {
 	protected delete(id: Id | Id[]) {
 		const deleteid = Array.isArray(id) ? id.join(',') : id
 		return this.server.delete(`${this.uri}multiple_delete/?deleteid=${deleteid}`)
+	}
+
+	protected delete_one(id:Id){
+		return this.server.delete(`${this.uri}${id}/`)
 	}
 }
 

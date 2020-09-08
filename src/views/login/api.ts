@@ -13,6 +13,7 @@ export interface login_info {
 	username:string
 	token:string
 	img:string
+	user_id:string
 }
 
 class HttpLogin extends Http{

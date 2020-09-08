@@ -62,9 +62,6 @@ export default class extends Vue {
 		this.info.video_time = Math.round(val).toString()
 	}
 
-	mounted(){
-
-	}
 }
 </script>
 
