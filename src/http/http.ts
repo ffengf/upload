@@ -104,4 +104,8 @@ export abstract class Http{
 	protected get(params?: any):Promise<any> {
 		return this.server.get(this.uri, { params })
 	}
+
+	protected delete_one(id:Id){
+		return this.server.delete(`${this.uri}${id}/`)
+	}
 }

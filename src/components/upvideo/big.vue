@@ -87,7 +87,7 @@ export default class extends Vue {
 
 <style>
 .el-upload-dragger {
-    width: 1055px;
+    width: 1200px;
     height: 425px;
 }
 .slot {
