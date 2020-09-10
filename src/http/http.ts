@@ -32,6 +32,7 @@ server.interceptors.response.use(({ data }) => {
 }, err => {
 	loadding.hideLoading()
 	if (err?.response?.status === 401) {
+		Vue.$message.error(`401错误`)
 		return Promise.reject(err)
 	}
 	if (err?.response?.status === 403) {
@@ -40,6 +41,7 @@ server.interceptors.response.use(({ data }) => {
 		Vue.$message.error('登录过期')
 		return Promise.reject(err)
 	}
+	Vue.$message.error(`请求错误`)
 	return Promise.reject(err)
 })
 

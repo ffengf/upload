@@ -16,11 +16,11 @@
                 <el-menu-item index="/interaction/concern">关注列表</el-menu-item>
                 <el-menu-item index="/interaction/fans">粉丝列表</el-menu-item>
             </el-submenu>
-			<el-submenu index="/data">
+			<!-- <el-submenu index="/data">
                 <template slot="title">数据管理</template>
                 <el-menu-item index="/data/video">视频数据</el-menu-item>
 				<el-menu-item index="/data/article">文章数据</el-menu-item>
-            </el-submenu>
+            </el-submenu> -->
         </el-menu>
     </div>
 </template>
