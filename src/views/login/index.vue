@@ -50,8 +50,8 @@ export default class extends Vue {
         ],
     };
     info = {
-        phone_num: "18772953390",
-        password: "123456aaa",
+        phone_num: "",
+        password: "",
     };
     async submit() {
 		await (this.$refs['adminForm'] as ElForm|undefined)?.validate()
